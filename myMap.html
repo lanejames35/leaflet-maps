@@ -9,25 +9,92 @@
 		 <script src="https://unpkg.com/leaflet@1.1.0/dist/leaflet.js"
 			integrity="sha512-mNqn2Wg7tSToJhvHcqfzLMU6J4mkOImSPTxVZAdo+lcPlk+GhZmYgACEe0x35K7YzW1zJ7XyJV/TT1MrdXvMcA=="
 			crossorigin=""></script>
-		<script src="https://cdn.rawgit.com/lanejames35/leaflet-maps/4224f42d/getData.js"></script>
 		<style>
-			#durham-map{width: 400px; height: 300px}
+			#durham-map{width: 600px; height: 400px}
+			.info {
+				padding: 6px 8px;
+				font: 14px/16px Arial, Helvetica, sans-serif;
+				background: white;
+				background: rgba(255,255,255,0.8);
+				box-shadow: 0 0 15px rgba(0,0,0,0.2);
+				border-radius: 5px;
+			}
+			.info h4 {
+				margin: 0 0 5px;
+				color: #777;
+			}
 		</style>
 	</head>
 	<body>
 		<div id="durham-map"></div>
-		<script>
-			var xmlHttp = new XMLHttpRequest();
-			xmlHttp.open("GET", "https://opendata.arcgis.com/datasets/7267d01b1348498694d887b091d735c7_12.geojson", true);
-			xmlHttp.send();
+		<script src="./getData.js"></script>
+		<script>	
+			// Set up the map
 			var mapboxAccessToken = "pk.eyJ1IjoibGFuZWphbWVzMzUiLCJhIjoiY2o0c2o4bzN5MnYxMjJxcXNtaWl4eDhldyJ9.Rpcmvzzn6Y6w1Qv8PUMbwg";
-			var theMap = L.map('durham-map').setView([43.9, -78.9], 6);
-			L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=' + mapboxAccessToken, {
-				attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
+			var theMap = L.map('durham-map').setView([43.898206, -78.940707], 8);
+			L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/streets-v10/tiles/256/{z}/{x}/{y}?access_token=' + mapboxAccessToken, {
+				attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery &copy; <a href="http://mapbox.com">Mapbox</a>',
 				maxZoom: 18,
 				id: 'mapbox.streets'
 			}).addTo(theMap);
-			L.geoJson(xmlHttp.response).addTo(theMap);
+			
+			// Highlight the neighbourhoods when the mouse is hovered
+			var geojson;
+			function highlightFeature(e) {
+				var layer = e.target;
+
+				layer.setStyle({
+					weight: 5,
+					color: '#666',
+					dashArray: '',
+					fillOpacity: 0.7
+				});
+
+				if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+					layer.bringToFront();
+				}
+				
+				info.update(layer.feature.properties);
+			}
+			
+			// Reset when the mouse is moved outline
+			function resetHighlight(e) {
+				geojson.resetStyle(e.target);
+				info.update();
+			}
+			
+			// Zoom in on the neighbourhood when clicked
+			function zoomToFeature(e) {
+				theMap.fitBounds(e.target.getBounds());
+			}
+			
+			// Add the listeners to each neighbourhood
+			function onEachFeature(feature, layer) {
+				layer.on({
+					mouseover: highlightFeature,
+					mouseout: resetHighlight,
+					click: zoomToFeature
+				});
+			}
+			
+			// Custom control to show the state of the map
+			var info = L.control();
+			info.onAdd = function (theMap) {
+				this._div = L.DomUtil.create('div', 'info'); // create a div with a class "info"
+				this.update();
+				return this._div;
+			};
+
+			// method that we will use to update the control based on feature properties passed
+			info.update = function (props) {
+				this._div.innerHTML = '<h4>Neighbourhood name</h4>' +  (props ?
+					'<b>' + props.COMMON_NAME + '</b>' : 'Hover over a neighbourhood');
+			};
+	
+			// Add the shape data
+			geojson = L.geoJson( mapData, {onEachFeature: onEachFeature} ).addTo(theMap);
+			// Add the info panel
+			info.addTo(theMap);
 		</script>
 	</body>
 </html>
