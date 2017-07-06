@@ -27,11 +27,11 @@
 	</head>
 	<body>
 		<div id="durham-map"></div>
-		<script src="./getData.js"></script>
+		<script src="https://cdn.rawgit.com/lanejames35/leaflet-maps/06c37c13/getData.js"></script>
 		<script>	
 			// Set up the map
 			var mapboxAccessToken = "pk.eyJ1IjoibGFuZWphbWVzMzUiLCJhIjoiY2o0c2o4bzN5MnYxMjJxcXNtaWl4eDhldyJ9.Rpcmvzzn6Y6w1Qv8PUMbwg";
-			var theMap = L.map('durham-map').setView([43.898206, -78.940707], 8);
+			var theMap = L.map('durham-map').setView([43.898206, -78.940707], 9);
 			L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/streets-v10/tiles/256/{z}/{x}/{y}?access_token=' + mapboxAccessToken, {
 				attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery &copy; <a href="http://mapbox.com">Mapbox</a>',
 				maxZoom: 18,
