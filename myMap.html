@@ -9,7 +9,7 @@
 		 <script src="https://unpkg.com/leaflet@1.1.0/dist/leaflet.js"
 			integrity="sha512-mNqn2Wg7tSToJhvHcqfzLMU6J4mkOImSPTxVZAdo+lcPlk+GhZmYgACEe0x35K7YzW1zJ7XyJV/TT1MrdXvMcA=="
 			crossorigin=""></script>
-		<script src="https://rawgit.com/lanejames35/leaflet-maps/master/getData.js"></script>
+		<script src="https://cdn.rawgit.com/lanejames35/leaflet-maps/4224f42d/getData.js"></script>
 		<style>
 			#durham-map{width: 400px; height: 300px}
 		</style>
@@ -17,6 +17,9 @@
 	<body>
 		<div id="durham-map"></div>
 		<script>
+			var xmlHttp = new XMLHttpRequest();
+			xmlHttp.open("GET", "https://opendata.arcgis.com/datasets/7267d01b1348498694d887b091d735c7_12.geojson", true);
+			xmlHttp.send();
 			var mapboxAccessToken = "pk.eyJ1IjoibGFuZWphbWVzMzUiLCJhIjoiY2o0c2o4bzN5MnYxMjJxcXNtaWl4eDhldyJ9.Rpcmvzzn6Y6w1Qv8PUMbwg";
 			var theMap = L.map('durham-map').setView([43.9, -78.9], 6);
 			L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=' + mapboxAccessToken, {
@@ -24,7 +27,7 @@
 				maxZoom: 18,
 				id: 'mapbox.streets'
 			}).addTo(theMap);
-			L.geoJson(mapData).addTo(theMap);
+			L.geoJson(xmlHttp.response).addTo(theMap);
 		</script>
 	</body>
 </html>
