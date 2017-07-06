@@ -9,6 +9,7 @@
 		 <script src="https://unpkg.com/leaflet@1.1.0/dist/leaflet.js"
 			integrity="sha512-mNqn2Wg7tSToJhvHcqfzLMU6J4mkOImSPTxVZAdo+lcPlk+GhZmYgACEe0x35K7YzW1zJ7XyJV/TT1MrdXvMcA=="
 			crossorigin=""></script>
+		<script src="https://rawgit.com/lanejames35/leaflet-maps/master/getData.js"></script>
 		<style>
 			#durham-map{width: 400px; height: 300px}
 		</style>
@@ -16,13 +17,14 @@
 	<body>
 		<div id="durham-map"></div>
 		<script>
-			var theMap = L.map('durham-map').setView([43.9, -78.9], 13);
-			L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
+			var mapboxAccessToken = "pk.eyJ1IjoibGFuZWphbWVzMzUiLCJhIjoiY2o0c2o4bzN5MnYxMjJxcXNtaWl4eDhldyJ9.Rpcmvzzn6Y6w1Qv8PUMbwg";
+			var theMap = L.map('durham-map').setView([43.9, -78.9], 4);
+			L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=' + mapboxAccessToken, {
 				attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
 				maxZoom: 18,
-				id: 'mapbox.streets',
-				accessToken: 'pk.eyJ1IjoibGFuZWphbWVzMzUiLCJhIjoiY2o0c2o4bzN5MnYxMjJxcXNtaWl4eDhldyJ9.Rpcmvzzn6Y6w1Qv8PUMbwg'
+				id: 'mapbox.streets'
 			}).addTo(theMap);
+			L.geoJson(mapData).addTo(theMap);
 		</script>
 	</body>
 </html>
